@@ -131,6 +131,11 @@ var strip, animation;
 var length = 48;
 var r = g = b = count = 0;
 var leds = Array(length);
+var flare_count = 16;
+var current_flare = 0;
+var flare_pause = 1;
+var flares = Array(flare_count);
+
 var chasers = [
 	new Chaser([200, 75, 75], 0, true),
 	new Chaser([75, 200, 75], Math.floor(length * 0.2), false),
@@ -138,6 +143,11 @@ var chasers = [
 	new Chaser([200, 200, 75], Math.floor(length * 0.6), false),
 	new Chaser([220, 75, 175], Math.floor(length * 0.8), true),
 	];
+
+for (var i = 0; i < flare_count; i++) {
+	//flares[i] = new Flare([255, 255, 255], Math.floor(length/i), i, i*2);
+	flares[i] = new Flare();
+}
 
 $(document).ready(function() {
 	strip = new LEDStrip(length, $('.ledstrip'), $('.ledlight'));
@@ -155,6 +165,12 @@ $(document).ready(function() {
     case 'chasers':
       animation = requestAnimationFrame(chase);
       console.log('chasers ' + animation);
+      break;
+    case 'flares':
+	  clearLeds(leds);
+    
+      animation = requestAnimationFrame(flare);
+      console.log('flares ' + animation);
       break;
     case 'stop':
       console.log('stop ' + animation);
@@ -280,4 +296,82 @@ function ledtick() {
     strip.send(leds);
     //console.log('LATCH');
     //console.log(r + ', ' + g + ', ' + b);
+}
+
+function Flare(color, position, amplitude, speed) {
+	this.color = color || [255,255,255];
+	this.position = position || 0;
+	this.amplitude = amplitude || 0;
+	this.speed = speed || 0;
+
+	return this;
+}
+
+Flare.prototype.step = function (buf) {
+	this._step();
+	this._set(buf);
+}
+
+Flare.prototype._step = function() {
+	if (this.speed < 0 && -this.speed > this.amplitude) {
+		this.amplitude = 0;
+	} else {
+		this.amplitude += this.speed;
+		if (this.amplitude > 256) {
+			this.amplitude = 256;
+			this.speed = -this.speed >> 2 + 1;
+		}
+	}
+}
+
+Flare.prototype._set = function (buf) {
+	buf[this.position] = this._scale(this.color);
+}
+
+Flare.prototype._scale = function(color) {
+	var r, g, b;
+	var amp = this.amplitude;
+
+	r = (color[0] * amp) >> 8;
+	g = (color[1] * amp) >> 8;
+	b = (color[2] * amp) >> 8;
+
+	return [r, g, b];
+}
+
+// Modified from original.
+Flare.prototype._randomBrightness = function () {
+	return 250 - Math.floor((Math.random() * 125));
+}
+
+Flare.prototype._randomize = function (count) {
+	this.color = [this._randomBrightness(), this._randomBrightness(), this._randomBrightness()];
+	this.amplitude = Math.floor(Math.random() * 100) + 100;
+	this.position = Math.floor(Math.random() * count);
+	this.speed = 2 * Math.floor(Math.random() * 8) + 4;
+}
+
+function flare() {
+	animation = requestAnimationFrame(flare);
+
+	// slow things down. 1 == full speed
+    if ((count++ % 3)) return;
+
+	if (flare_pause) {
+		--flare_pause;
+	} else {
+		//console.log(flares);
+		if(!flares[current_flare].amplitude) {
+			flares[current_flare]._randomize(length);
+			++current_flare;
+			if (current_flare >= flare_count) current_flare = 0;
+			//flare_pause = Math.floor(Math.random() * 80);
+		}
+	}
+
+	for (var i = 0; i < flare_count; i++) {
+		flares[i].step(leds);
+	}
+
+	strip.send(leds);
 }
