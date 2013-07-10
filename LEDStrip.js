@@ -32,14 +32,11 @@
  */
 function LEDStrip(count, stripElem, ledElem) {
 	this.elem = {}; // HTML element the strip is bound to
-	this.len = 30; // default to 30 lights
+	this.len = count || 30; // default to 30 lights
 	this.lights = [];
 
-	if (count) {
-		this.len = count;
-	}
-
 	this.elem = stripElem;
+	// REFACTOR: eliminate jQuery dependency
 	$(this.elem).addClass('LEDStrip');
 
 	/**
@@ -57,6 +54,7 @@ function LEDStrip(count, stripElem, ledElem) {
 	 */
 	for (var i = 0; i < this.len; i++) {
 		var light = new LED;
+		// REFACTOR: eliminate jQuery dependency
     	light.elem = $(ledElem).clone().addClass('LEDLight');
     	$(this.elem).append(light.elem);
 		this.lights.push(light);
@@ -96,6 +94,7 @@ function LED() {
 }
 
 LED.prototype.latch = function () {
+	// REFACTOR: eliminate jQuery dependency
 	$(this.elem).css('background-color', 
 				'rgb(' + this.rgb[0] + ',' + this.rgb[1] + ',' + this.rgb[2] + ')'
 			);
@@ -155,6 +154,7 @@ $(document).ready(function() {
   
   $('#animselect').change(function(e) {
   var newanim = $(e.target).val();
+  clearLeds(leds);
   console.log('change! ' + newanim); 
   cancelAnimationFrame(animation);
   switch(newanim) {
@@ -276,20 +276,20 @@ function ledtick() {
 	animation = requestAnimationFrame(ledtick);
 
 	// slow things down. 1 == full speed
-    if ((count++ % 3)) return;
+    if ((count++ % 8)) return;
 
 	for (var i = 0; i < length; i++) {
-		r+=Math.floor(256/length);
+		r = r + Math.floor(1 + r * i/length);
 		if (r >= 255) {
 			r = 0;
-			g+=Math.floor(256/length);
+			g = g + Math.floor(1 + g * i/length);
 		}
 		if (g >= 255) {
 			g = 0;
-			b+=Math.floor(256/length);
+			b = b - Math.floor(1 + b * i/length);
 		}
-		if (b >= 255)  {
-			b = 0;
+		if (b < 0)  {
+			b = 255;
 		}
 	    leds[i] = [r,g,b];
   	}

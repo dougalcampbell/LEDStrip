@@ -14,7 +14,7 @@ form {display: block;}
     border: 1px solid #888;
     background-color: #aaa;
     clear: right;
-  margin: 3em 1em;
+  margin: 1em 1em;
 }
 .ledstrip:after {
   float: none;
