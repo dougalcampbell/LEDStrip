@@ -78,7 +78,7 @@ LEDStrip.prototype.latch = function () {
 
 // Set colors in one big batch. Array of RGB triplets.
 LEDStrip.prototype.send = function(vals) {
-	for (var i = 0; i < this.len; i++) {
+	for (var i = 0; i < vals.length -1; i++) {
 		this.pushRGB(vals[i][0], vals[i][1], vals[i][2]);
 	}
 	this.latch();
@@ -129,7 +129,7 @@ LED.prototype.dataout = function (r, g, b) {
 var strip, animation;
 var length = 48;
 var r = g = b = count = 0;
-var leds = Array(length);
+var leds = Array(length-1);
 var flare_count = 16;
 var current_flare = 0;
 var flare_pause = 1;
@@ -148,19 +148,24 @@ for (var i = 0; i < flare_count; i++) {
 	flares[i] = new Flare();
 }
 
+var torture;
+
 $(document).ready(function() {
 	strip = new LEDStrip(length, $('.ledstrip'), $('.ledlight'));
 	animation = requestAnimationFrame(chase);
+	torture = new water_torture(strip);
+	torture.init(leds);
   
   $('#animselect').change(function(e) {
   var newanim = $(e.target).val();
-  clearLeds(leds);
+  //clearLeds(leds);
+  strip.send(leds);
   console.log('change! ' + newanim); 
   cancelAnimationFrame(animation);
   switch(newanim) {
-    case 'colorfade': 
-      animation = requestAnimationFrame(ledtick);
-      console.log('ledtick ' + animation);
+    case 'torture': 
+      animation = requestAnimationFrame(torture.animate.bind(torture));
+      console.log('torture ' + animation);
       break;
     case 'chasers':
       animation = requestAnimationFrame(chase);
