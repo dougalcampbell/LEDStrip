@@ -33,7 +33,8 @@
 function LEDStrip(count, stripElem, ledElem) {
 	this.elem = {}; // HTML element the strip is bound to
 	this.len = count || 30; // default to 30 lights
-	this.lights = [];
+	this.lights = []; // Array of LED objects
+	this.leds = Array(this.len - 1); // Array of color values to send
 
 	this.elem = stripElem;
 	// REFACTOR: eliminate jQuery dependency
@@ -77,11 +78,16 @@ LEDStrip.prototype.latch = function () {
 }
 
 // Set colors in one big batch. Array of RGB triplets.
-LEDStrip.prototype.send = function(vals) {
-	for (var i = 0; i < vals.length -1; i++) {
-		this.pushRGB(vals[i][0], vals[i][1], vals[i][2]);
+LEDStrip.prototype.send = function() {
+	for (var i = 0; i < this.leds.length; i++) {
+		this.pushRGB(this.leds[i][0], this.leds[i][1], this.leds[i][2]);
 	}
 	this.latch();
+}
+
+LEDStrip.prototype.clearLeds = function () {
+	for (i=0; i < this.leds.length; i++)
+		this.leds[i] = [0,0,0];
 }
 
 /**
@@ -129,7 +135,6 @@ LED.prototype.dataout = function (r, g, b) {
 var strip, animation;
 var length = 48;
 var r = g = b = count = 0;
-var leds = Array(length-1);
 var flare_count = 16;
 var current_flare = 0;
 var flare_pause = 1;
@@ -154,12 +159,12 @@ $(document).ready(function() {
 	strip = new LEDStrip(length, $('.ledstrip'), $('.ledlight'));
 	animation = requestAnimationFrame(chase);
 	torture = new water_torture(strip);
-	torture.init(leds);
+	torture.init();
   
   $('#animselect').change(function(e) {
   var newanim = $(e.target).val();
-  //clearLeds(leds);
-  strip.send(leds);
+  //strip.clearLeds();
+  strip.send();
   console.log('change! ' + newanim); 
   cancelAnimationFrame(animation);
   switch(newanim) {
@@ -172,7 +177,7 @@ $(document).ready(function() {
       console.log('chasers ' + animation);
       break;
     case 'flares':
-	  clearLeds(leds);
+	  strip.clearLeds();
     
       animation = requestAnimationFrame(flare);
       console.log('flares ' + animation);
@@ -188,21 +193,22 @@ function chase() {
 	animation = requestAnimationFrame(chase);
 	// slow things down. 1 == full speed
     if ((count++ % 3)) return;
-	clearLeds(leds);
+	strip.clearLeds();
 	for ( var i = 0; i < chasers.length; i++ ) {
-		chasers[i].step(leds);
+		chasers[i].step(strip.leds);
 	}
-	strip.send(leds);
+	strip.send();
 }
 
 /**
  * CHASERS: https://github.com/DannyHavenith/ws2811
  */
+/*
 function clearLeds(buf) {
 	for (i=0; i < length; i++)
 		buf[i] = [0,0,0];
 }
-
+*/
 function Chaser(color, position, forward) {
 	this.color = color;
 	this.position = position;
@@ -274,33 +280,6 @@ Chaser.prototype._addClipped = function(rgb1, rgb2) {
 	newrgb[2] = newrgb[2] > 255 ? 255 : newrgb[2];
 
 	return newrgb;	
-}
-
-// alternate looping color animation
-function ledtick() {
-	animation = requestAnimationFrame(ledtick);
-
-	// slow things down. 1 == full speed
-    if ((count++ % 8)) return;
-
-	for (var i = 0; i < length; i++) {
-		r = r + Math.floor(1 + r * i/length);
-		if (r >= 255) {
-			r = 0;
-			g = g + Math.floor(1 + g * i/length);
-		}
-		if (g >= 255) {
-			g = 0;
-			b = b - Math.floor(1 + b * i/length);
-		}
-		if (b < 0)  {
-			b = 255;
-		}
-	    leds[i] = [r,g,b];
-  	}
-    strip.send(leds);
-    //console.log('LATCH');
-    //console.log(r + ', ' + g + ', ' + b);
 }
 
 function Flare(color, position, amplitude, speed) {
@@ -375,8 +354,8 @@ function flare() {
 	}
 
 	for (var i = 0; i < flare_count; i++) {
-		flares[i].step(leds);
+		flares[i].step(strip.leds);
 	}
 
-	strip.send(leds);
+	strip.send();
 }

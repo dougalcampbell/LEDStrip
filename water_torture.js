@@ -4,7 +4,7 @@
  *  Created on: Feb 12, 2013
  *      Author: danny
  * 
- * Converted to JavaScript by Dougal Campbell
+ * Converted to JavaScript by Dougal Campbell, July 11, 2013
  */
 
 function water_torture(ledstrip) {
@@ -12,9 +12,9 @@ function water_torture(ledstrip) {
 	return this;
 }
 
-water_torture.prototype.init = function (buf) {
-	this.leds = buf;
-	this.ledcount = buf.length;
+water_torture.prototype.init = function () {
+	this.leds = this.ledstrip.leds;
+	this.ledcount = this.ledstrip.leds.length;
     this.droplet_count = 4;
     this.droplets = Array(this.droplet_count - 1); // droplets that can animate simultaneously.
     this.current_droplet = 0; // index of the next droplet to be created
@@ -162,16 +162,12 @@ water_torture.prototype.droplet.prototype.scale = function (value, amplitude) {
 			]
 }
 
-// how much of a color is left when colliding with the floor, value
-// between 0 and 256 where 256 means no loss.
-water_torture.prototype.droplet.prototype.collision_scaling = 40;
-
 water_torture.prototype.droplet.prototype.random_scale = function () {
 	return Math.floor((Math.random() * 256));
 }
 
 water_torture.prototype.droplet.prototype.randomize_droplet = function () {
-	this.color = [	this.mult(100 ,this.random_scale()),
+	this.color = [	this.mult(100, this.random_scale()),
 					this.mult(100, this.random_scale()),
 					this.mult(255, this.random_scale())
 					];
@@ -195,7 +191,6 @@ water_torture.prototype.animate = function animate() {
 	}
 	else
 	{
-		try {
 		if (! this.droplets[this.current_droplet].is_active() )
 		{
 			this.droplets[this.current_droplet].randomize_droplet();
@@ -203,12 +198,9 @@ water_torture.prototype.animate = function animate() {
 			if (this.current_droplet >= this.droplet_count) this.current_droplet = 0;
 			this.droplet_pause = 100 + Math.floor(Math.random() * 80);
 		}
-		} catch (e) {
-			console.log('current_droplet: ', this.current_droplet);
-		}
 	}
 
-	clearLeds(this.leds);
+	this.ledstrip.clearLeds();
 
 	for (var idx = 0; idx < this.droplet_count; ++idx)
 	{
