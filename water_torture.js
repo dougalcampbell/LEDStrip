@@ -9,6 +9,7 @@
 
 function water_torture(ledstrip) {
 	this.ledstrip = ledstrip;
+	this.ledstrip.clearLeds();
 	return this;
 }
 
@@ -16,7 +17,7 @@ water_torture.prototype.init = function () {
 	this.leds = this.ledstrip.leds;
 	this.ledcount = this.ledstrip.leds.length;
     this.droplet_count = 4;
-    this.droplets = Array(this.droplet_count - 1); // droplets that can animate simultaneously.
+    this.droplets = Array(this.droplet_count); // droplets that can animate simultaneously.
     this.current_droplet = 0; // index of the next droplet to be created
     this.droplet_pause = 1; // how long to wait for the next one
 
@@ -27,7 +28,7 @@ water_torture.prototype.init = function () {
 }
 
 water_torture.prototype.mult = function (value, multiplier) {
-		return ((value * multiplier) >> 8);
+		return Math.floor(value * multiplier / 256);
 }
 
 /// This class maintains the state and calculates the animations to render a falling water droplet
@@ -62,8 +63,9 @@ water_torture.prototype.droplet.prototype._step = function () {
 			this.speed += this.gravity;
 
 			// if we hit the bottom...
-			var maxpos16 = this.parent.ledcount << 8;
-			if (this.position > maxpos16)
+			//var maxpos16 = Math.floor(this.parent.ledcount * 256);
+			var maxpos16 = (this.parent.leds.length - 1) * 256;
+			if (this.position >= maxpos16)
 			{
 				if (this.state == this.bouncing)
 				{
@@ -107,10 +109,10 @@ water_torture.prototype.droplet.prototype._draw = function () {
 	//console.log('drawing - state = ' + this.state);
 	if (this.state == this.falling || this.state == this.bouncing)
 	{
-		var position8 = this.position >> 8;
-		var remainder = this.position; // get the lower bits
+		var position8 = Math.floor(this.position / 256);
+		var remainder = this.position % 256; // get the lower bits
 
-		this.add_clipped_to(this.parent.leds[position8], this.scale( this.color, 256 - remainder ));
+		this.add_clipped_to(this.parent.leds[position8], this.scale( this.color, 255 - remainder ));
 		if (remainder)
 		{
 			this.add_clipped_to(this.parent.leds[position8+1], this.scale(this.color, remainder));
@@ -149,7 +151,7 @@ water_torture.prototype.droplet.prototype.add_clipped_to = function (left, right
 /// multiply an 8-bit value with an 8.8 bit fixed point number.
 /// multiplier should not be higher than 1.00 (or 256).
 water_torture.prototype.droplet.prototype.mult = function (value, multiplier) {
-	return (value * multiplier) >> 8;
+	return Math.floor(value * multiplier / 256);
 }
 
 /// scale an rgb value up or down. amplitude > 256 means scaling up, while
@@ -163,7 +165,7 @@ water_torture.prototype.droplet.prototype.scale = function (value, amplitude) {
 }
 
 water_torture.prototype.droplet.prototype.random_scale = function () {
-	return Math.floor((Math.random() * 256));
+	return 128 + Math.floor((Math.random() * 128));
 }
 
 water_torture.prototype.droplet.prototype.randomize_droplet = function () {
@@ -171,7 +173,7 @@ water_torture.prototype.droplet.prototype.randomize_droplet = function () {
 					this.mult(100, this.random_scale()),
 					this.mult(255, this.random_scale())
 					];
-	this.gravity = 10;
+	this.gravity = 5;
 	this.state = this.swelling;
 }
 
@@ -196,7 +198,7 @@ water_torture.prototype.animate = function animate() {
 			this.droplets[this.current_droplet].randomize_droplet();
 			++this.current_droplet;
 			if (this.current_droplet >= this.droplet_count) this.current_droplet = 0;
-			this.droplet_pause = 100 + Math.floor(Math.random() * 80);
+			this.droplet_pause = 200 + Math.floor(Math.random() * 400);
 		}
 	}
 
@@ -207,7 +209,7 @@ water_torture.prototype.animate = function animate() {
 		this.droplets[idx].step();
 	}
 
-	this.ledstrip.send(this.leds);
+	this.ledstrip.send();
 }
 
 

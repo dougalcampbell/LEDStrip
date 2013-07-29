@@ -34,19 +34,11 @@ function LEDStrip(count, stripElem, ledElem) {
 	this.elem = {}; // HTML element the strip is bound to
 	this.len = count || 30; // default to 30 lights
 	this.lights = []; // Array of LED objects
-	this.leds = Array(this.len - 1); // Array of color values to send
+	this.leds = Array(this.len); // Array of color values to send
 
 	this.elem = stripElem;
 	// REFACTOR: eliminate jQuery dependency
 	$(this.elem).addClass('LEDStrip');
-
-	/**
-	 * remove any old lights
-	 */
-	while (this.lights.length) {
-		var rem = this.lights.pop();
-		rem.next = undefined; // help with garbage collection?
-	}
 
 	$(ledElem).detach();
 
@@ -59,8 +51,8 @@ function LEDStrip(count, stripElem, ledElem) {
     	light.elem = $(ledElem).clone().addClass('LEDLight');
     	$(this.elem).append(light.elem);
 		this.lights.push(light);
-		if (i) { // > zero
-			this.lights[i-1].next = this.lights[i]; // pointer
+		if (i > 0) {
+			this.lights[i-1].next = this.lights[i]; // previous chains to current
 		}
 	}
 }
@@ -78,10 +70,13 @@ LEDStrip.prototype.latch = function () {
 }
 
 // Set colors in one big batch. Array of RGB triplets.
-LEDStrip.prototype.send = function() {
-	for (var i = 0; i < this.leds.length; i++) {
-		this.pushRGB(this.leds[i][0], this.leds[i][1], this.leds[i][2]);
-	}
+LEDStrip.prototype.send = function(buf) {
+	var leds = buf || this.leds;
+
+	leds.forEach(function(l) {
+		this.pushRGB(l[0], l[1], l[2]);
+	}.bind(this));
+
 	this.latch();
 }
 
@@ -96,7 +91,7 @@ LEDStrip.prototype.clearLeds = function () {
 function LED() {
 	this.elem = {}; // HTML element the LED is bound to
 	this.next = undefined; // next LED instance in chain
-	this.rgb = [];
+	this.rgb = []; // RGB value to be displayed upon next latch
 }
 
 LED.prototype.latch = function () {
@@ -111,10 +106,15 @@ LED.prototype.latch = function () {
 }
 
 LED.prototype.datain = function (r, g, b) {
+	/**
+	 * If we already have a value set, pass the incoming value on to the next
+	 * module. If not, keep it for ourselves.
+	 */
 	if (this.rgb.length) {
-		this.dataout(this.rgb[0], this.rgb[1], this.rgb[2]);
+		this.dataout(r, g, b);
+	} else {
+		this.rgb = [r, g, b];
 	}
-	this.rgb = [r, g, b];
 }
 
 LED.prototype.dataout = function (r, g, b) {
@@ -128,12 +128,13 @@ LED.prototype.dataout = function (r, g, b) {
  * Do eet!
  * 
  * This code currently relies on some global variables, which I don't like.
- * It's a side-effect of my translation of the original AVR C++ code. I 
+ * It's a side-effect of my () translation of the original AVR C++ code. I 
  * need to wrap it up and encapsulate it better, maybe with some IoC for
  * the connection between my LEDStrip class and this controller code.
  */
+
 var strip, animation;
-var length = 48;
+var length = 37;
 var r = g = b = count = 0;
 var flare_count = 16;
 var current_flare = 0;
@@ -153,13 +154,15 @@ for (var i = 0; i < flare_count; i++) {
 	flares[i] = new Flare();
 }
 
-var torture;
+var torture, cycle;
 
 $(document).ready(function() {
 	strip = new LEDStrip(length, $('.ledstrip'), $('.ledlight'));
-	animation = requestAnimationFrame(chase);
+	cycle = new ColorCycle(strip);
+	cycle.init();
 	torture = new water_torture(strip);
 	torture.init();
+	animation = requestAnimationFrame(chase);
   
   $('#animselect').change(function(e) {
   var newanim = $(e.target).val();
@@ -169,17 +172,21 @@ $(document).ready(function() {
   cancelAnimationFrame(animation);
   switch(newanim) {
     case 'torture': 
-      animation = requestAnimationFrame(torture.animate.bind(torture));
+      torture.animate();
+      console.log('torture ' + animation);
+      break;
+    case 'cycle': 
+      cycle.color_cycle();
       console.log('torture ' + animation);
       break;
     case 'chasers':
-      animation = requestAnimationFrame(chase);
+      chase();
       console.log('chasers ' + animation);
       break;
     case 'flares':
 	  strip.clearLeds();
     
-      animation = requestAnimationFrame(flare);
+      flare();
       console.log('flares ' + animation);
       break;
     case 'stop':
@@ -203,12 +210,6 @@ function chase() {
 /**
  * CHASERS: https://github.com/DannyHavenith/ws2811
  */
-/*
-function clearLeds(buf) {
-	for (i=0; i < length; i++)
-		buf[i] = [0,0,0];
-}
-*/
 function Chaser(color, position, forward) {
 	this.color = color;
 	this.position = position;
@@ -228,12 +229,12 @@ Chaser.prototype.step = function(buf) {
 
 Chaser.prototype._step = function(size) {
 	if (this.forward) {
-		if (++this.position > size) {
+		if (++this.position >= size) {
 			this.position = size - 1;
 			this.forward = false;
 		}
 	} else {
-		if (!--this.position) {
+		if (--this.position <= 0) {
 			this.forward = true;
 		}
 	}
@@ -248,9 +249,12 @@ Chaser.prototype._draw = function(buf) {
 		buf[pos] = this._addClipped(buf[pos], value);
 		pos += step;
 
-		if (pos == length) {
+		if (pos >= length) {
 			step = -step;
 			pos = length - 1;
+		} else if (pos <= 0) {
+			step = -step;
+			pos = 0;
 		}
 	}
 }

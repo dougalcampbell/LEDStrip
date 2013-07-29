@@ -5,8 +5,20 @@ body {
 
 br { clear: both; }
 
-/* disabled for now. not working */
 form {display: block;}
+
+a,a:link {
+  color: #77f;
+}
+
+a:visited {
+  color: #88c;
+}
+
+li {
+  margin-bottom: 0.25em;
+}
+
 .ledstrip {
     display: block;
     float: left;
@@ -16,6 +28,7 @@ form {display: block;}
     clear: right;
   margin: 1em 1em;
 }
+
 .ledstrip:after {
   float: none;
   display: block;
@@ -34,6 +47,6 @@ form {display: block;}
 
 #output {
   clear: left;
-  margin-top: 4em;
+  margin-top: 1em;
   
 }
