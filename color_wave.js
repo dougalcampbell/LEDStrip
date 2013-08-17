@@ -23,10 +23,10 @@ ColorWave.prototype.map2PI = function(tick) {
 }
 
 /**
- * scale values [-1, 1] to [0, 255]
+ * scale values [-1.0 .. 1.0] to [0 .. 255]
  */
 ColorWave.prototype.scale = function (val) {
-	val += 1; // bump up to a zero base: [0, 2]
+	val += 1; // bump up to a zero base: [0 .. 2]
 	val *= 255/2; // scale up
 
 	return Math.floor(val); // return int
@@ -35,9 +35,9 @@ ColorWave.prototype.scale = function (val) {
 ColorWave.prototype.wave = function (tick) {
 	var offset = this.map2PI(tick);
 	for (var i = 0; i < this.ledstrip.len; i++) {
-		// Generate some RGBs, range [-1, +1]
+		// Generate some RGBs, range [-1 .. +1]
 		var j = this.map2PI(i) + offset;
-		var rsin = Math.sin(this.map2PI(j)); // sin(t)
+		var rsin = Math.sin(j); // sin(t)
 		var gsin = 0; //Math.sin(this.map2PI(2 * j / 3 + this.ledstrip.len / 6)); // sin(2/3 t + 1/3 PI)
 		var bsin = 0; //Math.sin(this.map2PI(4 * j / 5 + this.ledstrip.len / 3)); // sin(4/5 t + 2/3 PI)
 
