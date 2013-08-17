@@ -162,6 +162,8 @@ $(document).ready(function() {
 	cycle.init();
 	torture = new water_torture(strip);
 	torture.init();
+	colorwave = new ColorWave(strip);
+	colorwave.init();
 	animation = requestAnimationFrame(chase);
   
   $('#animselect').change(function(e) {
@@ -178,6 +180,10 @@ $(document).ready(function() {
     case 'cycle': 
       cycle.color_cycle();
       console.log('torture ' + animation);
+      break;
+    case 'wave': 
+      colorwave.animate();
+      console.log('wave ' + animation);
       break;
     case 'chasers':
       chase();
