@@ -41,7 +41,7 @@ water_torture.prototype.mult = function (value, multiplier) {
 /// After going through the swelling, falling and bouncing phases, the droplet automatically returns to the
 /// inactive state.
 water_torture.prototype.droplet = function (color, gravity) {
-	this.color = color || [100,100,200];
+	this.color = color || [50,70,220];
 	this.gravity = gravity || 5;
 	this.position = 0;
 	this.speed = 0;
@@ -78,7 +78,7 @@ water_torture.prototype.droplet.prototype._step = function () {
 					// reverse direction and dampen the speed
 					this.position = maxpos16 - (this.position - maxpos16);
 					this.speed = Math.floor(-this.speed/4);
-					this.color = this.scale( this.color, 10);
+					this.color = this.scale( this.color, 200);
 					this.state = this.bouncing;
 				}
 			}
@@ -86,7 +86,7 @@ water_torture.prototype.droplet.prototype._step = function () {
 		else if (this.state == this.swelling)
 		{
 			++this.position;
-			if ( this.color[2] <= 10 || this.color[2] - this.position <= 10)
+			if ( this.color[2] <= 100 || this.color[2] - this.position <= 10)
 			{
 				this.state = this.falling;
 				this.position = 0;
@@ -169,9 +169,9 @@ water_torture.prototype.droplet.prototype.random_scale = function () {
 }
 
 water_torture.prototype.droplet.prototype.randomize_droplet = function () {
-	this.color = [	this.mult(100, this.random_scale()),
-					this.mult(100, this.random_scale()),
-					this.mult(255, this.random_scale())
+	this.color = [	this.mult(this.random_scale(), 100),
+					this.mult(this.random_scale(), 100),
+					this.mult(this.random_scale(), 255)
 					];
 	this.gravity = 5;
 	this.state = this.swelling;

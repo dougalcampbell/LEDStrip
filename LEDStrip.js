@@ -60,20 +60,24 @@ function LEDStrip(count, stripElem, ledElem) {
 LEDStrip.prototype.pushRGB = function (r, g, b) {
 		if (this.lights[0] && this.lights[0].datain) {
 			this.lights[0].datain(r, g, b);
+		} else {
+			console.log("Can't push!");
 		}
 }
 
 LEDStrip.prototype.latch = function () {
 		if (this.lights[0] && this.lights[0].latch) {
 			this.lights[0].latch();
+		} else {
+			console.log("Can't latch!");
 		}
 }
 
 // Set colors in one big batch. Array of RGB triplets.
 LEDStrip.prototype.send = function(buf) {
-	var leds = buf || this.leds;
+	//var leds = buf || this.leds;
 
-	leds.forEach(function(l) {
+	this.leds.forEach(function(l) {
 		this.pushRGB(l[0], l[1], l[2]);
 	}.bind(this));
 
@@ -138,7 +142,7 @@ var length = 37;
 var r = g = b = count = 0;
 var flare_count = 16;
 var current_flare = 0;
-var flare_pause = 1;
+var flare_pause = 20;
 var flares = Array(flare_count);
 
 var chasers = [
@@ -158,8 +162,8 @@ var torture, cycle;
 
 $(document).ready(function() {
 	strip = new LEDStrip(length, $('.ledstrip'), $('.ledlight'));
-	cycle = new ColorCycle(strip);
-	cycle.init();
+	//cycle = new ColorCycle(strip);
+	//cycle.init();
 	torture = new water_torture(strip);
 	torture.init();
 	colorwave = new ColorWave(strip);
@@ -177,10 +181,12 @@ $(document).ready(function() {
       torture.animate();
       console.log('torture ' + animation);
       break;
+/*
     case 'cycle': 
       cycle.color_cycle();
       console.log('torture ' + animation);
       break;
+*/
     case 'wave': 
       colorwave.animate();
       console.log('wave ' + animation);
@@ -335,14 +341,14 @@ Flare.prototype._scale = function(color) {
 
 // Modified from original.
 Flare.prototype._randomBrightness = function () {
-	return 250 - Math.floor((Math.random() * 125));
+	return 255 - Math.floor((Math.random() * 75));
 }
 
 Flare.prototype._randomize = function (count) {
 	this.color = [this._randomBrightness(), this._randomBrightness(), this._randomBrightness()];
-	this.amplitude = Math.floor(Math.random() * 100) + 100;
+	this.amplitude = Math.floor(Math.random() * 55) + 200;
 	this.position = Math.floor(Math.random() * count);
-	this.speed = 2 * Math.floor(Math.random() * 8) + 4;
+	this.speed = 2 * Math.floor(Math.random() * 10) + 4;
 }
 
 function flare() {
@@ -359,7 +365,7 @@ function flare() {
 			flares[current_flare]._randomize(length);
 			++current_flare;
 			if (current_flare >= flare_count) current_flare = 0;
-			//flare_pause = Math.floor(Math.random() * 80);
+			flare_pause = Math.floor(Math.random() * 50);
 		}
 	}
 
