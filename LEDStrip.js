@@ -341,7 +341,7 @@ Flare.prototype._scale = function(color) {
 
 // Modified from original.
 Flare.prototype._randomBrightness = function () {
-	return 255 - Math.floor((Math.random() * 75));
+	return 255 - Math.floor((Math.random() * 200));
 }
 
 Flare.prototype._randomize = function (count) {
@@ -355,7 +355,7 @@ function flare() {
 	animation = requestAnimationFrame(flare);
 
 	// slow things down. 1 == full speed
-    if ((count++ % 3)) return;
+    if ((count++ % 1)) return;
 
 	if (flare_pause) {
 		--flare_pause;

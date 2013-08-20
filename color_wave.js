@@ -36,6 +36,7 @@ ColorWave.prototype.wave = function (tick) {
 	var offset = this.map2PI(tick);
 
 	if (Math.random() > .999)  this.direction *= -1; // All skate, reverse direction!
+	
 	for (var i = 0; i < this.ledstrip.len; i++) {
 		// Generate some RGBs, range [-1 .. +1]
 		var j = this.map2PI(i * this.direction) + offset;

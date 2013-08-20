@@ -169,9 +169,9 @@ water_torture.prototype.droplet.prototype.random_scale = function () {
 }
 
 water_torture.prototype.droplet.prototype.randomize_droplet = function () {
-	this.color = [	this.mult(this.random_scale(), 100),
-					this.mult(this.random_scale(), 100),
-					this.mult(this.random_scale(), 255)
+	this.color = [	this.mult(this.random_scale(), 150),
+					this.mult(this.random_scale(), 200),
+					this.mult(this.random_scale(), 512)
 					];
 	this.gravity = 5;
 	this.state = this.swelling;
