@@ -35,7 +35,7 @@ li {
   clear: both;
 }
 
-.ledlight {
+.ledlight, .WS2812-led {
     display: block;
     width: 10px;
     height: 10px;
