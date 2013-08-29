@@ -9,7 +9,7 @@
  * Released under the MIT License
  */
 
-var LEDstrip = function LEDstrip(el, size) {
+var LEDstrip = function LEDstrip(el, stripsize) {
 	/**
 	 * private variables
 	 */
@@ -23,7 +23,7 @@ var LEDstrip = function LEDstrip(el, size) {
 	 * new-less constructor
 	 * http://jfire.io/blog/2013/03/20/newless-javascript/
 	 */
-	if (! (this instanceof LEDstrip)) return new LEDstrip(el, size);
+	if (! (this instanceof LEDstrip)) return new LEDstrip(el, stripsize);
 
 	/* NOP console.log shim if real console object is not available */
 	if (typeof console === "undefined") {
@@ -40,7 +40,6 @@ var LEDstrip = function LEDstrip(el, size) {
 		/**
 		 * add new lights
 		 */
-		console.log('this = ', this);
 		var i;
 		var j = lights.length;
 		var light;
@@ -101,7 +100,6 @@ var LEDstrip = function LEDstrip(el, size) {
 	 * Add or remove lights to set the desired length
 	 */
 	function setsize(count) {
-		count = count || size;
 		var cursize = this.lights.length;
 		if (count > cursize) {
 			_addlights.bind(this)(this.lights, count - cursize);
@@ -150,8 +148,9 @@ var LEDstrip = function LEDstrip(el, size) {
 	}
 
 	function clear() {
+		var buff = this.buffer;
 		this.buffer.forEach(function(val, idx) {
-			this.buffer[idx] = [0,0,0];
+			buff[idx] = [0,0,0];
 		});
 
 		this.send();
@@ -170,6 +169,13 @@ var LEDstrip = function LEDstrip(el, size) {
 	}
 
 	/**
+	 * getter for the size of the LED strip
+	 */
+	function size() {
+		return this.lights.length;
+	}
+
+	/**
 	 * Make these methods public
 	 */
 	this.attach = attach;
@@ -179,13 +185,14 @@ var LEDstrip = function LEDstrip(el, size) {
 	this.send = send;
 	this.clear = clear;
 	this.setcolors = setcolors;
+	this.size = size;
 
 	if (el && el instanceof Node) {
 		this.attach(el);
 	}
 
-	if (size > 0) {
-		this.setsize(size);
+	if (stripsize > 0) {
+		this.setsize(stripsize);
 	}
 
 	return this;

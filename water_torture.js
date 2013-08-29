@@ -9,13 +9,13 @@
 
 function water_torture(ledstrip) {
 	this.ledstrip = ledstrip;
-	this.ledstrip.clearLeds();
+	//this.ledstrip.clear();
 	return this;
 }
 
 water_torture.prototype.init = function () {
-	this.leds = this.ledstrip.leds;
-	this.ledcount = this.ledstrip.leds.length;
+	this.buffer = this.ledstrip.buffer;
+	this.ledcount = this.ledstrip.size();
     this.droplet_count = 4;
     this.droplets = Array(this.droplet_count); // droplets that can animate simultaneously.
     this.current_droplet = 0; // index of the next droplet to be created
@@ -64,7 +64,7 @@ water_torture.prototype.droplet.prototype._step = function () {
 
 			// if we hit the bottom...
 			//var maxpos16 = Math.floor(this.parent.ledcount * 256);
-			var maxpos16 = (this.parent.leds.length - 1) * 256;
+			var maxpos16 = (this.parent.ledstrip.size() - 1) * 256;
 			if (this.position >= maxpos16)
 			{
 				if (this.state == this.bouncing)
@@ -112,20 +112,20 @@ water_torture.prototype.droplet.prototype._draw = function () {
 		var position8 = Math.floor(this.position / 256);
 		var remainder = this.position % 256; // get the lower bits
 
-		this.add_clipped_to(this.parent.leds[position8], this.scale( this.color, 255 - remainder ));
+		this.add_clipped_to(this.parent.buffer[position8], this.scale( this.color, 255 - remainder ));
 		if (remainder)
 		{
-			this.add_clipped_to(this.parent.leds[position8+1], this.scale(this.color, remainder));
+			this.add_clipped_to(this.parent.buffer[position8+1], this.scale(this.color, remainder));
 		}
 
 		if (this.state == this.bouncing)
 		{
-			this.add_clipped_to(this.parent.leds[this.parent.leds.length - 1], this.color);
+			this.add_clipped_to(this.parent.buffer[this.parent.ledstrip.size() - 1], this.color);
 		}
 	}
 	else if (this.state == this.swelling)
 	{
-		this.add_clipped_to(this.parent.leds[0], this.scale(this.color, this.position));
+		this.add_clipped_to(this.parent.buffer[0], this.scale(this.color, this.position));
 	}
 	//console.log('after draw, droplet = ', this);
 }
@@ -202,7 +202,7 @@ water_torture.prototype.animate = function animate() {
 		}
 	}
 
-	this.ledstrip.clearLeds();
+	this.ledstrip.clear();
 
 	for (var idx = 0; idx < this.droplet_count; ++idx)
 	{

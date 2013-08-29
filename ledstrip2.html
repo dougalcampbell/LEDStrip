@@ -5,6 +5,52 @@
 	<script type="text/javascript" src="rAF.js"></script>
 	<script type="text/javascript" src="ledstrip2.js"></script>
   <script type="text/javascript" src="ws2812.js"></script>
+  <script type="text/javascript" src="color_wave.js"></script>
+  <script type="text/javascript" src="water_torture.js"></script>
+  <script type="text/javascript">
+  var strip, animation; // need to be global
+
+  $(document).ready(function(){
+    var container = $('.ledstrip')[0];
+    var light_count = 30;
+    strip = LEDstrip(container, light_count);
+    var driver = new ColorWave(strip);
+    driver.init();
+    animation = driver.animate.bind(driver)();
+
+    $('#animselect').change(function(e) {
+      var newanim = $(e.target).val();
+      console.log('change! ' + newanim); 
+      animation = cancelAnimationFrame(animation);
+      switch(newanim) {
+        case 'torture':
+          driver = new water_torture(strip);
+          break;
+        case 'wave':
+          driver = new ColorWave(strip);
+          break;
+    /*
+        case 'cycle': 
+          cycle.color_cycle();
+          console.log('torture ' + animation);
+          break;
+        case 'chasers':
+          driver = new chase();
+          break;
+        case 'flares':        
+          driver = new flare();
+          break;
+    */
+        case 'stop':
+          animation = cancelAnimationFrame(animation);
+          return;
+          break;
+      } // /switch
+      driver.init();
+      animation = driver.animate();
+    });
+  });
+  </script>
 </head>
 <body>
 
@@ -16,11 +62,11 @@
 <br />
 <form>
   <select id="animselect">
-    <option value="chasers">Chasers</option>
-    <!-- <option value="cycle">Color Cycle</option> -->
     <option value="wave">Color Wave</option>
-    <option value="flares">Flares</option>
     <option value="torture">Water Torture</option>
+    <!-- option value="chasers">Chasers</option -->
+    <!-- <option value="cycle">Color Cycle</option> -->
+    <!-- option value="flares">Flares</option -->
     <option value="stop">Stop</option>
   </select>
 </form>
