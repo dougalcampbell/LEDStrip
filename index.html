@@ -81,15 +81,62 @@
 
     <div class="container">
       <section id="main_content">
-        <h3>
-<a name="ledstrip-simulation" class="anchor" href="#ledstrip-simulation"><span class="octicon octicon-link"></span></a>LEDstrip simulation</h3>
+        <h3><a name="ledstrip-simulation" class="anchor" href="#ledstrip-simulation"><span class="octicon octicon-link"></span></a>LEDstrip simulation</h3>
+
 <div class="ledstrip"></div>
+<br />
+<form>
+  <select id="animselect">
+    <option value="wave">Color Wave</option>
+    <option value="torture">Water Torture</option>
+    <option value="chasers">Chasers</option>
+    <!-- <option value="cycle">Color Cycle</option> -->
+    <!-- option value="flares">Flares</option -->
+    <option value="stop">Stop</option>
+  </select>
+</form>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<h3><a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Usage example</h3>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<pre><code>    var container = $('.mylights')[0]; // Container DIV in the page
+    var colors = [ // blue gradient
+      [0,0,50],
+      [0,0,100],
+      [0,0,150],
+      [0,0,200],
+      [0,0,250]
+    ];
+    var size = colors.length;
+
+    
+    var strip = LEDstrip(container, size) // Initialize
+      .setcolors(colors)  // chain commands
+      .send();
+      
+    colors.forEach(function(val,idx){ // fiddle with colors
+      colors[idx][0] = colors[4-idx][2];
+      colors[idx][1] = (colors[idx][0] + colors[idx][2]) >> 1; // g = (r + b) / 2
+    });
+    
+    strip.buffer = colors; // set the color buffer directly
+    strip.send();
+    
+    // assume that animate() is a function that manipulates strip.buffer[]...
+    var rAF_id = requestAnimationFrame(animate);
+    var i = 0;
+    
+    function animate() {
+      rAF_id = requestAnimationFrame(animate);
+      if (i == size) i = 0; // loop around the array
+
+      /* generate random rgb values */
+      var r = Math.floor(Math.random() * 255);
+      var g = Math.floor(Math.random() * 255);
+      var b = Math.floor(Math.random() * 255);
+
+      strip.buffer[i++] = [r, g, b];
+      strip.send();
+    }
 </code></pre>
 
 <p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
