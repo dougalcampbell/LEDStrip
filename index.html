@@ -108,22 +108,35 @@
     ];
     var size = colors.length;
 
-    
+    /**
+     * Set colors, and send to strip using chaining.
+     */
     var strip = LEDstrip(container, size) // Initialize
       .setcolors(colors)  // chain commands
       .send();
-      
+    
+    /**
+     * Manipulate the color buffer. Example of using seperate
+     * function calls.
+     */
     colors.forEach(function(val,idx){ // fiddle with colors
       colors[idx][0] = colors[4-idx][2];
-      colors[idx][1] = (colors[idx][0] + colors[idx][2]) >> 1; // g = (r + b) / 2
+      /** 
+       * g = (r + b) / 2
+       */
+      colors[idx][1] = (colors[idx][0] + colors[idx][2]) >> 1;
     });
     
     strip.buffer = colors; // set the color buffer directly
     strip.send();
-    
-    // assume that animate() is a function that manipulates strip.buffer[]...
-    var rAF_id = requestAnimationFrame(animate);
+
+    /**
+     * Animation loops. Manipulate the buffer, and send values.
+     *
+     * animate() is a function that manipulates strip.buffer[]...
+     */
     var i = 0;
+    var rAF_id = requestAnimationFrame(animate);
     
     // Think of this function like the loop() call in the Arduino IDE
     function animate() {
