@@ -1,0 +1,52 @@
+body {
+  background-color: #333;
+  color: #aaa;
+}
+
+br { clear: both; }
+
+form {display: block;}
+
+a,a:link {
+  color: #77f;
+}
+
+a:visited {
+  color: #88c;
+}
+
+li {
+  margin-bottom: 0.25em;
+}
+
+.ledstrip {
+    display: block;
+    float: left;
+    height: 16px;
+    border: 1px solid #888;
+    background-color: #aaa;
+    clear: right;
+  margin: 1em 1em;
+}
+
+.ledstrip:after {
+  float: none;
+  display: block;
+  clear: both;
+}
+
+.ledlight, .WS2812-led {
+    display: block;
+    width: 10px;
+    height: 10px;
+    float: left;
+    border: 1px solid #ddd;
+    background-color: #000;
+    margin: 2px;
+}
+
+#output {
+  clear: left;
+  margin-top: 1em;
+  
+}
