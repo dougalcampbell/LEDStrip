@@ -125,6 +125,7 @@
     var rAF_id = requestAnimationFrame(animate);
     var i = 0;
     
+    // Think of this function like the loop() call in the Arduino IDE
     function animate() {
       rAF_id = requestAnimationFrame(animate);
       if (i == size) i = 0; // loop around the array
@@ -137,6 +138,9 @@
       strip.buffer[i++] = [r, g, b];
       strip.send();
     }
+
+    /* When you want to end the animation: */
+    // cancelAnimationFrame(rAF_id);
 </code></pre>
 
 <h3>For more information:</h3>
