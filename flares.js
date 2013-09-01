@@ -16,7 +16,7 @@ for (var i = 0; i < flare_count; i++) {
 }
 
 */
-function Flare(color, position, amplitude, speed) {
+function Flares(color, position, amplitude, speed) {
 	this.color = color || [255,255,255];
 	this.position = position || 0;
 	this.amplitude = amplitude || 0;
@@ -25,12 +25,12 @@ function Flare(color, position, amplitude, speed) {
 	return this;
 }
 
-Flare.prototype.step = function (buf) {
+Flares.prototype.step = function (buf) {
 	this._step();
 	this._set(buf);
 }
 
-Flare.prototype._step = function() {
+Flares.prototype._step = function() {
 	if (this.speed < 0 && -this.speed > this.amplitude) {
 		this.amplitude = 0;
 	} else {
@@ -42,11 +42,11 @@ Flare.prototype._step = function() {
 	}
 }
 
-Flare.prototype._set = function (buf) {
+Flares.prototype._set = function (buf) {
 	buf[this.position] = this._scale(this.color);
 }
 
-Flare.prototype._scale = function(color) {
+Flares.prototype._scale = function(color) {
 	var r, g, b;
 	var amp = this.amplitude;
 
@@ -58,18 +58,18 @@ Flare.prototype._scale = function(color) {
 }
 
 // Modified from original.
-Flare.prototype._randomBrightness = function () {
+Flares.prototype._randomBrightness = function () {
 	return 255 - Math.floor((Math.random() * 200));
 }
 
-Flare.prototype._randomize = function (count) {
+Flares.prototype._randomize = function (count) {
 	this.color = [this._randomBrightness(), this._randomBrightness(), this._randomBrightness()];
 	this.amplitude = Math.floor(Math.random() * 55) + 200;
 	this.position = Math.floor(Math.random() * count);
 	this.speed = 2 * Math.floor(Math.random() * 10) + 4;
 }
 
-function flare() {
+Flares.prototype.animate = function() {
 	animation = requestAnimationFrame(flare);
 
 	// slow things down. 1 == full speed

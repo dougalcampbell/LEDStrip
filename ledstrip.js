@@ -1,5 +1,5 @@
 /**
- * LEDStrip.js
+ * LEDstrip.js
  * 
  * Dougal Campbell <dougal@gunters.org>
  * http://dougal.gunters.org/

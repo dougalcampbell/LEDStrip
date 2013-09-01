@@ -3,10 +3,11 @@
 	<link rel="stylesheet" type="text/css" href="LEDStrip.css" />
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
 	<script type="text/javascript" src="rAF.js"></script>
-	<script type="text/javascript" src="ledstrip2.js"></script>
+	<script type="text/javascript" src="ledstrip.js"></script>
   <script type="text/javascript" src="ws2812.js"></script>
   <script type="text/javascript" src="color_wave.js"></script>
   <script type="text/javascript" src="water_torture.js"></script>
+  <script type="text/javascript" src="chasers.js"></script>
   <script type="text/javascript">
   var strip, animation; // need to be global
 
@@ -29,13 +30,13 @@
         case 'wave':
           driver = new ColorWave(strip);
           break;
+        case 'chasers':
+          driver = new Chasers(strip);
+          break;
     /*
         case 'cycle': 
           cycle.color_cycle();
           console.log('torture ' + animation);
-          break;
-        case 'chasers':
-          driver = new chase();
           break;
         case 'flares':        
           driver = new flare();
@@ -64,7 +65,7 @@
   <select id="animselect">
     <option value="wave">Color Wave</option>
     <option value="torture">Water Torture</option>
-    <!-- option value="chasers">Chasers</option -->
+    <option value="chasers">Chasers</option>
     <!-- <option value="cycle">Color Cycle</option> -->
     <!-- option value="flares">Flares</option -->
     <option value="stop">Stop</option>
