@@ -3,6 +3,12 @@ LEDStrip
 
 JavaScript simulation of WS2812 LED strips commonly used with Arduino
 
+Demo
+----
+There is a live demo available here:
+
+http://dougalcampbell.github.io/LEDStrip/
+
 Usage example
 -------------
 
