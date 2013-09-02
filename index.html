@@ -69,7 +69,7 @@
     <header>
       <div class="container">
         <h1>LEDstrip</h1>
-        <h2>JavaScript simulation of WS2812 LED strips commonly used with Arduino</h2>
+        <h2>JavaScript simulation of WS2811/WS2812 LED strips commonly used with Arduino.</h2>
 
         <section id="downloads">
           <a href="https://github.com/dougalcampbell/LEDStrip/zipball/master" class="btn">Download as .zip</a>
@@ -82,19 +82,27 @@
     <div class="container">
       <section id="main_content">
         <h3><a name="ledstrip-simulation" class="anchor" href="#ledstrip-simulation"><span class="octicon octicon-link"></span></a>LEDstrip simulation</h3>
-
+        <p>By <a href="https://github.com/dougalcampbell">Dougal Campbell</a></p>
 <div class="ledstrip"></div>
 <br />
 <form>
   <select id="animselect">
     <option value="wave">Color Wave</option>
-    <option value="torture">Water Torture</option>
     <option value="chasers">Chasers</option>
+    <option value="torture">Water Torture</option>
     <!-- <option value="cycle">Color Cycle</option> -->
     <!-- option value="flares">Flares</option -->
     <option value="stop">Stop</option>
   </select>
 </form>
+
+        <p>
+          This is an example of my WS2812 RGB LED strip simulation in JavaScript. These LED
+          strips are popular in Arduino projects because they only require one GPIO output 
+          pin to control, handle PWM output of the RGB state automatically, and offer a
+          relatively easy way to indivually address individual pixels in the strip. Strips
+          can even be cut and reconnected serially to create a 2D matrix, if desired.
+        </p>
 
 <h3><a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Usage example</h3>
 
