@@ -52,3 +52,14 @@ Usage example
       strip.send();
     }
     
+Want to help?
+-------------
+If you find a bug, want to add a feature or new lighting driver, please
+feel free to contribute! Pull requests welcome!
+
+TODO
+----
+ * Add controls to demo for number of pixels and run speed
+ * Add Adafruit NeoPixel library compatibility
+ * Add simple 2D matrix support
+ * MOAR LIGHTING ALGORITHMS!
