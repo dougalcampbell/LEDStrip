@@ -16,6 +16,7 @@
     <script type="text/javascript" src="javascripts/color_wave.js"></script>
     <script type="text/javascript" src="javascripts/water_torture.js"></script>
     <script type="text/javascript" src="javascripts/chasers.js"></script>
+    <script type="text/javascript" src="javascripts/larson.js"></script>
     <script type="text/javascript">
     var strip, animation; // need to be global
 
@@ -40,6 +41,9 @@
             break;
           case 'chasers':
             driver = new Chasers(strip);
+            break;
+          case 'larson':
+            driver = new Larson(strip);
             break;
       /*
           case 'cycle': 
@@ -90,6 +94,7 @@
     <option value="wave">Color Wave</option>
     <option value="chasers">Chasers</option>
     <option value="torture">Water Torture</option>
+    <option value="larson">Larson Scaner</option>
     <!-- <option value="cycle">Color Cycle</option> -->
     <!-- option value="flares">Flares</option -->
     <option value="stop">Stop</option>
