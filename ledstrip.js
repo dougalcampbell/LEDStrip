@@ -66,7 +66,7 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 		if (count > j) count = j; // can't remove more lights than we have!
 		if (count <= 0) return; // nothing to do!
 
-		for (i = count; i >= 0; --i) {
+		for (i = count; i > 0; --i) {
 			light = lights.pop(); // remove last element from lights array
 			light.elem.parentNode.removeChild(light.elem); // remove DOM element from parent
 			light.next = undefined; // dereference any old light pointers
