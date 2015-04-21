@@ -147,6 +147,9 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 		return this;
 	}
 
+	/**
+	 * Set all the pixels to black.
+	 */
 	function clear() {
 		var buff = this.buffer;
 		this.buffer.forEach(function(val, idx) {
@@ -163,7 +166,7 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 	 *
 	 */
 	function setcolors(buf) {
-		this.buffer = buf.valueOf();
+		this.buffer = buf.valueOf(); // valueOf so we get a copy, not a reference
 
 		return this;
 	}
@@ -176,6 +179,76 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 	}
 
 	/**
+	 * Convert HSL to RGB. See: http://www.w3.org/TR/2011/REC-css3-color-20110607/#hsl-color
+	 *
+	 * h is in degrees [0 - 360]
+	 * s and l are percentages, floats in the range [0.0 .. 1.0]
+	 * 
+	 * Input values are sanity-checked and coerced into the valid ranges.
+	 * 
+	 * Returns an array, [r, g, b], each value in the integer range [0 .. 255]
+	 */
+	function hsl2rgb(h, s, l) {
+		// Sanity check inputs
+		h = (Math.floor(h) % 360) / 360; // normalize to [0.0 .. 1.0]
+		// If value is less than zero, make it zero
+		if (s < 0) s = 0;
+		if (l < 0) l = 0;
+		// if the value is greater than one, make it one
+		if (s > 1.0) s = 1.0;
+		if (l > 1.0) l = 1.0;
+
+		// Convert hsl to rgb...
+		if ( l <= 0.5 ) {
+			m2 = l * (s + 1);
+		} else {
+			m2 = l + s - l*s;
+		}
+
+		m1 = l*2 - m2;
+
+		r = Math.floor(255 * hue2rgb(m1, m2, h + 1/3));
+		g = Math.floor(255 * hue2rgb(m1, m2, h));
+		b = Math.floor(255 * hue2rgb(m1, m2, h - 1/3));
+
+		return [r, g, b];
+	}
+
+	/**
+	 * Helper function for hsl2rgb conversion
+	 */
+	function hue2rgb(m1, m2, h) {
+		if (h < 0) h++;
+		if (h > 1) h--;
+		if (h * 6 < 1) return m1 + (m2 - m1) * h * 6;
+		if (h * 2 < 1) return m2;
+		if (h * 3 < 2) return m1 + (m2 - m1) * (2/3 - h) * 6;
+
+		return m1;
+	}
+
+	/**
+	 * Wheel function. Basically a stripped down hsv2rgb, with constant
+	 * s and l values... Often used in NeoPixel examples
+	 *
+	 * Input a value 0 to 255 to get a color value.
+	 * The colours are a transition r - g - b - back to r.
+	 */
+	function Wheel(WheelPos) {
+	  WheelPos = 255 - WheelPos;
+	  if(WheelPos < 85) {
+	   return [255 - WheelPos * 3, 0, WheelPos * 3];
+	  } else if(WheelPos < 170) {
+	    WheelPos -= 85;
+	   return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+	  } else {
+	   WheelPos -= 170;
+	   return [WheelPos * 3, 255 - WheelPos * 3, 0];
+	  }
+	}
+
+
+	/**
 	 * Make these methods public
 	 */
 	this.attach = attach;
@@ -186,6 +259,8 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 	this.clear = clear;
 	this.setcolors = setcolors;
 	this.size = size;
+	this.hsl2rgb = hsl2rgb;
+	this.Wheel = Wheel;
 
 	if (el && el instanceof Node) {
 		this.attach(el);
