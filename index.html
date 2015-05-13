@@ -1,6 +1,6 @@
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="LEDStrip.css" />
+	<link rel="stylesheet" type="text/css" href="ledstrip.css" />
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
 	<script type="text/javascript" src="rAF.js"></script>
 	<script type="text/javascript" src="ledstrip.js"></script>
@@ -9,6 +9,7 @@
   <script type="text/javascript" src="water_torture.js"></script>
   <script type="text/javascript" src="chasers.js"></script>
   <script type="text/javascript" src="larson.js"></script>
+  <script type="text/javascript" src="bouncingballs.js"></script>
   <script type="text/javascript">
   var strip, animation; // need to be global
 
@@ -36,6 +37,9 @@
           break;
         case 'larson':
           driver = new Larson(strip);
+          break;
+        case 'bouncingballs':
+          driver = new BouncingBalls(strip);
           break;
     /*
         case 'cycle': 
@@ -71,6 +75,7 @@
     <option value="torture">Water Torture</option>
     <option value="chasers">Chasers</option>
     <option value="larson">Larson Scanner</option>
+    <option value="bouncingballs">Bouncing Balls</option>
     <!-- <option value="cycle">Color Cycle</option> -->
     <!-- option value="flares">Flares</option -->
     <option value="stop">Stop</option>
