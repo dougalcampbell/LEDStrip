@@ -66,7 +66,7 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 		if (count > j) count = j; // can't remove more lights than we have!
 		if (count <= 0) return; // nothing to do!
 
-		for (i = count; i >= 0; --i) {
+		for (i = count; i > 0; --i) {
 			light = lights.pop(); // remove last element from lights array
 			light.elem.parentNode.removeChild(light.elem); // remove DOM element from parent
 			light.next = undefined; // dereference any old light pointers
@@ -247,6 +247,20 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 	  }
 	}
 
+	/**
+	 * showColors() -- FastLED compat
+	 */
+	function showColor(color) {
+		var buff = this.buffer;
+		this.buffer.forEach(function(val, idx) {
+			buff[idx] = color;
+		});
+
+		this.send();
+
+		return this;
+	}
+
 
 	/**
 	 * Make these methods public
@@ -261,6 +275,7 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 	this.size = size;
 	this.hsl2rgb = hsl2rgb;
 	this.Wheel = Wheel;
+	this.showColor = showColor;
 
 	if (el && el instanceof Node) {
 		this.attach(el);
