@@ -247,6 +247,20 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 	  }
 	}
 
+	/**
+	 * showColors() -- FastLED compat
+	 */
+	function showColor(color) {
+		var buff = this.buffer;
+		this.buffer.forEach(function(val, idx) {
+			buff[idx] = color;
+		});
+
+		this.send();
+
+		return this;
+	}
+
 
 	/**
 	 * Make these methods public
@@ -261,6 +275,7 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 	this.size = size;
 	this.hsl2rgb = hsl2rgb;
 	this.Wheel = Wheel;
+	this.showColor = showColor;
 
 	if (el && el instanceof Node) {
 		this.attach(el);

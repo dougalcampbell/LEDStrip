@@ -29,6 +29,10 @@ li {
   margin: 1em 1em;
 }
 
+.ledstrip.ring .WS2812-led {
+  position: absolute;
+}
+
 .ledstrip:after {
   float: none;
   display: block;
