@@ -11,6 +11,7 @@
   <script type="text/javascript" src="larson.js"></script>
   <script type="text/javascript" src="bouncingballs.js"></script>
   <script type="text/javascript" src="lightning.js"></script>
+  <script type="text/javascript" src="twinklesparkle.js"></script>
   <script type="text/javascript">
   var strip, animation; // need to be global
 
@@ -44,6 +45,9 @@
           break;
         case 'lightning':
           driver = new Lightning(strip);
+          break;
+        case 'twinklesparkle':
+          driver = new TwinkleSparkle(strip);
           break;
     /*
         case 'cycle': 
@@ -81,6 +85,7 @@
     <option value="larson">Larson Scanner</option>
     <option value="bouncingballs">Bouncing Balls</option>
     <option value="lightning">Lightning</option>
+    <option value="twinklesparkle">TwinkleSparkle</option>
     <!-- <option value="cycle">Color Cycle</option> -->
     <!-- option value="flares">Flares</option -->
     <option value="stop">Stop</option>
