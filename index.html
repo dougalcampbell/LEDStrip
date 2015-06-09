@@ -24,6 +24,10 @@
     driver.init();
     animation = driver.animate.bind(driver)();
 
+    $('#diffuser').change(function(e) {
+      $('.ledstrip').toggleClass('diffuse');
+    });
+
     $('#animselect').change(function(e) {
       var newanim = $(e.target).val();
       console.log('change! ' + newanim); 
@@ -74,34 +78,36 @@
   </script>
 </head>
 <body>
-
-<h1>LED Strip Simulator</h1>
-<p>A software simulation of individually addressable RGB LED strips 
-  (WS2811/WS2812), often used with Arduino.</p>
-<div class="ledstrip">
-</div>
-<br />
-<form>
-  <select id="animselect">
-    <option value="wave">Color Wave</option>
-    <option value="torture">Water Torture</option>
-    <option value="chasers">Chasers</option>
-    <option value="larson">Larson Scanner</option>
-    <option value="bouncingballs">Bouncing Balls</option>
-    <option value="lightning">Lightning</option>
-    <option value="twinklesparkle">TwinkleSparkle</option>
-    <option value="fire">Fire</option>
-    <!-- <option value="cycle">Color Cycle</option> -->
-    <!-- option value="flares">Flares</option -->
-    <option value="stop">Stop</option>
-  </select>
-</form>
-<p id="output"></p>
-<p>For more information:</p>
-<ul>
-  <li><a href="https://github.com/DannyHavenith/ws2811">Danny Havenith's WS2811 Arduino library</a></li>
-  <li><a href="http://rurandom.org/justintime/index.php?title=Driving_the_WS2811_at_800_kHz_with_an_8_MHz_AVR">Detailed description and videos</a></li>
-</ul>
-
+  <header>
+    <h1>LED Strip Simulator</h1>
+    <p>A software simulation of individually addressable RGB LED strips 
+    (WS2811/WS2812), often used with Arduino.</p>
+  </header>
+  <article>
+    <div class="ledstrip"></div>
+    <br />
+    <form>
+      <select id="animselect">
+        <option value="wave">Color Wave</option>
+        <option value="torture">Water Torture</option>
+        <option value="chasers">Chasers</option>
+        <option value="larson">Larson Scanner</option>
+        <option value="bouncingballs">Bouncing Balls</option>
+        <option value="lightning">Lightning</option>
+        <option value="twinklesparkle">TwinkleSparkle</option>
+        <option value="fire">Fire</option>
+        <!-- <option value="cycle">Color Cycle</option> -->
+        <!-- option value="flares">Flares</option -->
+        <option value="stop">Stop</option>
+      </select>
+      <input type="checkbox" id="diffuser" value="0" /> <label for="diffuser">Diffuser</label>
+    </form>
+    <p id="output"></p>
+    <p>For more information:</p>
+    <ul>
+      <li><a href="https://github.com/DannyHavenith/ws2811">Danny Havenith's WS2811 Arduino library</a></li>
+      <li><a href="http://rurandom.org/justintime/index.php?title=Driving_the_WS2811_at_800_kHz_with_an_8_MHz_AVR">Detailed description and videos</a></li>
+    </ul>
+  </article>
 </body>
 </html>

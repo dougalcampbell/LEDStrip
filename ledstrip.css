@@ -3,9 +3,15 @@ body {
   color: #aaa;
 }
 
-br { clear: both; }
+br { 
+  content: " ";
+  clear: both; 
+}
 
-form {display: block;}
+form {
+  display: block;
+  margin: 1em;
+}
 
 a,a:link {
   color: #77f;
@@ -20,12 +26,12 @@ li {
 }
 
 .ledstrip {
-    display: block;
-    float: left;
-    height: 16px;
-    border: 1px solid #888;
-    background-color: #aaa;
-    clear: right;
+  display: block;
+  float: left;
+  height: 16px;
+  border: 1px solid #888;
+  background-color: #444;
+  clear: right;
   margin: 1em 1em;
 }
 
@@ -44,13 +50,20 @@ li {
     width: 10px;
     height: 10px;
     float: left;
-    border: 1px solid #ddd;
+    border: 1px solid #666;
     background-color: #000;
     margin: 2px;
 }
 
+.diffuse {
+  /* old IE version */
+  filter:progid:DXImageTransform.Microsoft.Blur(pixelradius=2);
+  /* Chrome, Safari, and friends */
+  -webkit-filter: blur(5px) brightness(200%);
+  /* Standard, Firefox, IE Edge with option enabled */
+  filter: blur(5px) brightness(200%);
+}
+
 #output {
-  clear: left;
   margin-top: 1em;
-  
 }
