@@ -20,6 +20,7 @@
     <script type="text/javascript" src="javascripts/bouncingballs.js"></script>
     <script type="text/javascript" src="javascripts/lightning.js"></script>
     <script type="text/javascript" src="javascripts/twinklesparkle.js"></script>
+    <script type="text/javascript" src="javascripts/fire.js"></script>
     <script type="text/javascript">
     var strip, animation; // need to be global
 
@@ -54,8 +55,11 @@
           case 'lightning':
             driver = new Lightning(strip);
             break;
-          case 'twinklesparkle':
+           case 'twinklesparkle':
             driver = new TwinkleSparkle(strip);
+            break;
+            case 'fire':
+            driver = new Fire(strip);
             break;
       /*
           case 'cycle': 
@@ -110,6 +114,7 @@
     <option value="bouncingballs">Bouncing Balls</option>
     <option value="lightning">Lightning</option>
     <option value="twinklesparkle">TwinkleSparkle</option>
+    <option value="fire">Fire</option>
     <!-- <option value="cycle">Color Cycle</option> -->
     <!-- option value="flares">Flares</option -->
     <option value="stop">Stop</option>
@@ -190,6 +195,7 @@
   <li><a href="http://rurandom.org/justintime/index.php?title=Driving_the_WS2811_at_800_kHz_with_an_8_MHz_AVR">Detailed description and videos</a></li>
   <li><a href="http://learn.adafruit.com/adafruit-neopixel-uberguide/overview">Adafruit NeoPixel Überguide</a></li>
   <li><a href="https://github.com/fibonacci162/LEDs">Danny Wilson's FastLED Experiments</a></li>
+  <li><a href="http://fastled.io/">FastLED Animation Library</a></li>
 </ul>
 
       </section>
