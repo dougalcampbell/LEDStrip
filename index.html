@@ -12,6 +12,7 @@
   <script type="text/javascript" src="bouncingballs.js"></script>
   <script type="text/javascript" src="lightning.js"></script>
   <script type="text/javascript" src="twinklesparkle.js"></script>
+  <script type="text/javascript" src="fire.js"></script>
   <script type="text/javascript">
   var strip, animation; // need to be global
 
@@ -48,6 +49,9 @@
           break;
         case 'twinklesparkle':
           driver = new TwinkleSparkle(strip);
+          break;
+        case 'fire':
+          driver = new Fire(strip);
           break;
     /*
         case 'cycle': 
@@ -86,6 +90,7 @@
     <option value="bouncingballs">Bouncing Balls</option>
     <option value="lightning">Lightning</option>
     <option value="twinklesparkle">TwinkleSparkle</option>
+    <option value="fire">Fire</option>
     <!-- <option value="cycle">Color Cycle</option> -->
     <!-- option value="flares">Flares</option -->
     <option value="stop">Stop</option>
