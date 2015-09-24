@@ -1,113 +1,119 @@
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="ledstrip.css" />
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
-	<script type="text/javascript" src="rAF.js"></script>
-	<script type="text/javascript" src="ledstrip.js"></script>
-  <script type="text/javascript" src="ws2812.js"></script>
-  <script type="text/javascript" src="color_wave.js"></script>
-  <script type="text/javascript" src="water_torture.js"></script>
-  <script type="text/javascript" src="chasers.js"></script>
-  <script type="text/javascript" src="larson.js"></script>
-  <script type="text/javascript" src="bouncingballs.js"></script>
-  <script type="text/javascript" src="lightning.js"></script>
-  <script type="text/javascript" src="twinklesparkle.js"></script>
-  <script type="text/javascript" src="fire.js"></script>
-  <script type="text/javascript">
-  var strip, animation; // need to be global
+    <link rel="stylesheet" type="text/css" href="ledstrip.css" />
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
+    <script type="text/javascript" src="rAF.js"></script>
+    <script type="text/javascript" src="ledstrip.js"></script>
+    <script type="text/javascript" src="ws2812.js"></script>
+    <script type="text/javascript" src="arduino_funcs.js"></script>
+    <script type="text/javascript" src="color_wave.js"></script>
+    <script type="text/javascript" src="water_torture.js"></script>
+    <script type="text/javascript" src="chasers.js"></script>
+    <script type="text/javascript" src="larson.js"></script>
+    <script type="text/javascript" src="bouncingballs.js"></script>
+    <script type="text/javascript" src="lightning.js"></script>
+    <script type="text/javascript" src="twinklesparkle.js"></script>
+    <script type="text/javascript" src="fire.js"></script>
+    <script type="text/javascript" src="eyeblink.js"></script>
+    <script type="text/javascript">
+    var strip, animation; // need to be global
 
-  $(document).ready(function(){
-    var container = $('.ledstrip')[0];
-    var light_count = 30;
-    strip = LEDstrip(container, light_count);
-    driver = new ColorWave(strip);
-    driver.init();
-    animation = driver.animate.bind(driver)();
-
-    $('#diffuser').change(function(e) {
-      $('.ledstrip').toggleClass('diffuse');
-    });
-
-    $('#animselect').change(function(e) {
-      var newanim = $(e.target).val();
-      console.log('change! ' + newanim); 
-      animation = cancelAnimationFrame(animation);
-      switch(newanim) {
-        case 'torture':
-          driver = new water_torture(strip);
-          break;
-        case 'wave':
-          driver = new ColorWave(strip);
-          break;
-        case 'chasers':
-          driver = new Chasers(strip);
-          break;
-        case 'larson':
-          driver = new Larson(strip);
-          break;
-        case 'bouncingballs':
-          driver = new BouncingBalls(strip);
-          break;
-        case 'lightning':
-          driver = new Lightning(strip);
-          break;
-        case 'twinklesparkle':
-          driver = new TwinkleSparkle(strip);
-          break;
-        case 'fire':
-          driver = new Fire(strip);
-          break;
-    /*
-        case 'cycle': 
-          cycle.color_cycle();
-          console.log('torture ' + animation);
-          break;
-        case 'flares':        
-          driver = new flare();
-          break;
-    */
-        case 'stop':
-          animation = cancelAnimationFrame(animation);
-          return;
-          break;
-      } // /switch
+    $(document).ready(function(){
+      var container = $('.ledstrip')[0];
+      var light_count = 30;
+      strip = LEDstrip(container, light_count);
+      driver = new ColorWave(strip);
       driver.init();
-      animation = driver.animate();
+      animation = driver.animate.bind(driver)();
+
+      $('#diffuser').change(function(e) {
+        $('.ledstrip').toggleClass('diffuse');
+      });
+
+      $('#animselect').change(function(e) {
+        var newanim = $(e.target).val();
+        console.log('change! ' + newanim); 
+        animation = cancelAnimationFrame(animation);
+        switch(newanim) {
+          case 'torture':
+            driver = new water_torture(strip);
+            break;
+          case 'wave':
+            driver = new ColorWave(strip);
+            break;
+          case 'chasers':
+            driver = new Chasers(strip);
+            break;
+          case 'larson':
+            driver = new Larson(strip);
+            break;
+          case 'bouncingballs':
+            driver = new BouncingBalls(strip);
+            break;
+          case 'lightning':
+            driver = new Lightning(strip);
+            break;
+          case 'twinklesparkle':
+            driver = new TwinkleSparkle(strip);
+            break;
+          case 'fire':
+            driver = new Fire(strip);
+            break;
+          case 'eyeblink':
+            driver = new Eyeblinks(strip);
+            break;
+      /*
+          case 'cycle': 
+            cycle.color_cycle();
+            console.log('torture ' + animation);
+            break;
+          case 'flares':        
+            driver = new flare();
+            break;
+      */
+          case 'stop':
+            animation = cancelAnimationFrame(animation);
+            return;
+            break;
+        } // /switch
+        driver.init();
+        animation = driver.animate();
+      });
     });
-  });
-  </script>
+    </script>
 </head>
 <body>
-  <header>
-    <h1>LED Strip Simulator</h1>
-    <p>A software simulation of individually addressable RGB LED strips 
-    (WS2811/WS2812), often used with Arduino.</p>
-  </header>
-  <article>
-    <div class="ledstrip"></div>
-    <br />
-    <form>
-      <select id="animselect">
-        <option value="wave">Color Wave</option>
-        <option value="torture">Water Torture</option>
-        <option value="chasers">Chasers</option>
-        <option value="larson">Larson Scanner</option>
-        <option value="bouncingballs">Bouncing Balls</option>
-        <option value="lightning">Lightning</option>
-        <option value="twinklesparkle">TwinkleSparkle</option>
-        <option value="fire">Fire</option>
-        <!-- <option value="cycle">Color Cycle</option> -->
-        <!-- option value="flares">Flares</option -->
-        <option value="stop">Stop</option>
-      </select>
-      <input type="checkbox" id="diffuser" value="0" /> <label for="diffuser">Diffuser</label>
-    </form>
-    <p id="output"></p>
-    <p>For more information:</p>
-    <ul>
-      <li><a href="https://github.com/DannyHavenith/ws2811">Danny Havenith's WS2811 Arduino library</a></li>
-      <li><a href="http://rurandom.org/justintime/index.php?title=Driving_the_WS2811_at_800_kHz_with_an_8_MHz_AVR">Detailed description and videos</a></li>
-    </ul>
-  </article>
-</body>
-</html>
+       <header>
+         <h1>LED Strip Simulator</h1>
+         <p>A software simulation of individually addressable RGB LED strips 
+         (WS2811/WS2812), often used with Arduino.</p>
+       </header>
+       <article>
+         <div class="ledstrip"></div>
+         <br />
+         <form>
+           <select id="animselect">
+             <option value="wave">Color Wave</option>
+             <option value="torture">Water Torture</option>
+             <option value="chasers">Chasers</option>
+             <option value="larson">Larson Scanner</option>
+             <option value="bouncingballs">Bouncing Balls</option>
+             <option value="lightning">Lightning</option>
+             <option value="twinklesparkle">TwinkleSparkle</option>
+             <option value="fire">Fire</option>
+             <option value="eyeblink">Eyeblink</option>
+             <!-- <option value="cycle">Color Cycle</option> -->
+             <!-- option value="flares">Flares</option -->
+             <option value="stop">Stop</option>
+           </select>
+           <input type="checkbox" id="diffuser" value="0" /> <label for="diffuser">Diffuser</label>
+         </form>
+         <p id="output"></p>
+         <p>For more information:</p>
+         <ul>
+           <li><a href="https://github.com/DannyHavenith/ws2811">Danny Havenith's WS2811 Arduino library</a></li>
+           <li><a href="http://rurandom.org/justintime/index.php?title=Driving_the_WS2811_at_800_kHz_with_an_8_MHz_AVR">Detailed description and videos</a></li>
+         </ul>
+       </article>
+     </body>
+     </html>

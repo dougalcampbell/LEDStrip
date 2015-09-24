@@ -51,6 +51,8 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 			if (j > 0) {
 				lights[j-1].next = lights[j]; // previous chains to current
 			}
+			// fill in new buffer elements
+			this.buffer[j] = [0,0,0];
 			++j;
 		}
 
@@ -105,6 +107,8 @@ var LEDstrip = function LEDstrip(el, stripsize) {
 			_addlights.bind(this)(this.lights, count - cursize);
 		} else if (count < cursize) {
 			_removelights.bind(this)(this.lights, cursize - count);
+            // remove excess buffer elements
+			this.buffer.length = count;
 		}
 
 		return this;
