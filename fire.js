@@ -3,7 +3,7 @@
  *
  * Fire by Mark Kriegsman, originally for the FastLED library
  *
- * Originally by Danny Wilson - see https://github.com/fibonacci162/LEDs
+ * see: https://github.com/FastLED/FastLED/blob/master/examples/Fire2012/Fire2012.ino
  *
  * LEDstrip plugin
  *
